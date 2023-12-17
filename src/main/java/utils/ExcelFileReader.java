@@ -28,6 +28,7 @@ public class ExcelFileReader {
 
     public List<Interview> readExcelFile(String fileName) {
         List<Interview> interviewList = new ArrayList<>();
+        System.out.println(interviewList.size());
 
         try(InputStream fileInputStream = new FileInputStream(fileName)) {
             Workbook workbook = new XSSFWorkbook(fileInputStream);
@@ -94,7 +95,7 @@ public class ExcelFileReader {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
+        System.out.println(interviewList.size());
         return interviewList;
     }
 }

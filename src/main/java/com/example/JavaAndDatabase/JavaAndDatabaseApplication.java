@@ -28,7 +28,7 @@ public class JavaAndDatabaseApplication {
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		SpringApplication.run(JavaAndDatabaseApplication.class, args);
 		ExcelFileReader fileReader = new ExcelFileReader();
-		String filePath = "C:\\Users\\kaulwar.mythri\\IdeaProjects\\JavaAndDatabase\\src\\main\\java\\utils\\AccoliteInterviewData.xlsx";
+		String filePath = "C:\\Users\\kaulwar.mythri\\IdeaProjects\\JavaAndDatabase\\src\\main\\resources\\AccoliteInterviewData.xlsx";
 		List<Interview> interviewList = fileReader.readExcelFile(filePath);
 //
 //		interviewList.parallelStream().forEach(JavaAndDatabaseApplication::insertDataIntoSQLTable);
