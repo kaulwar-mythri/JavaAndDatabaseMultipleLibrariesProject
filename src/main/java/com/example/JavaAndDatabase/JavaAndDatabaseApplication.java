@@ -21,7 +21,7 @@ import java.util.List;
 
 @SpringBootApplication
 public class JavaAndDatabaseApplication {
-	private static final String JDBC_URL = "jdbc:mysql://localhost:3306/exceldata";
+	private static final String JDBC_URL = "jdbc:mysql://localhost:3306/mythri";
 	private static final String JDBC_USER = "root";
 	private static final String JDBC_PASSWORD = "Vikas@1964";
 
@@ -31,10 +31,10 @@ public class JavaAndDatabaseApplication {
 		String filePath = "C:\\Users\\kaulwar.mythri\\IdeaProjects\\JavaAndDatabase\\src\\main\\resources\\AccoliteInterviewData.xlsx";
 		List<Interview> interviewList = fileReader.readExcelFile(filePath);
 		System.out.println(interviewList.size());
-//
-//		interviewList.parallelStream().forEach(JavaAndDatabaseApplication::insertDataIntoSQLTable);
-//
-//		generateCharts(interviewList);
+
+		interviewList.parallelStream().forEach(JavaAndDatabaseApplication::insertDataIntoSQLTable);
+
+		generateCharts(interviewList);
 	}
 
 	private static void generateCharts(List<Interview> interviewList) {
@@ -94,13 +94,13 @@ public class JavaAndDatabaseApplication {
 			String sql = "INSERT INTO interviews (date, month, teamName, panelName, round, skill, time, currLocation, prefLocation, candidateName) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 			try(PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-				preparedStatement.setDate(1, new java.sql.Date(interview.getDate().getTime()));
+				preparedStatement.setString(1, interview.getDate());
 				preparedStatement.setString(2, interview.getMonth());
 				preparedStatement.setString(3, interview.getTeamName());
 				preparedStatement.setString(4, interview.getPanelName());
 				preparedStatement.setString(5, interview.getRound());
 				preparedStatement.setString(6, interview.getSkill());
-				preparedStatement.setDate(7, new java.sql.Date(interview.getDate().getTime()));
+				preparedStatement.setString(7, interview.getTime());
 				preparedStatement.setString(8, interview.getCurrLocation());
 				preparedStatement.setString(9, interview.getPrefLocation());
 				preparedStatement.setString(10, interview.getCandidateName());

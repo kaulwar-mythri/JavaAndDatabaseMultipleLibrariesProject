@@ -3,22 +3,22 @@ package models;
 import java.util.Date;
 
 public class Interview {
-    Date date;
+    String date;
     String month;
     String teamName;
     String panelName;
     String round;
     String skill;
-    Date time;
+    String time;
     String currLocation;
     String prefLocation;
     String candidateName;
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -30,11 +30,11 @@ public class Interview {
         this.month = month;
     }
 
-    public Date getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(Date time) {
+    public void setTime(String time) {
         this.time = time;
     }
 

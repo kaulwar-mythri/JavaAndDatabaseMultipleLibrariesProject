@@ -8,22 +8,11 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class ExcelFileReader {
-    private static final int DATE_COLUMN_INDEX = 0;
-    private static final int MONTH_COLUMN_INDEX = 1;
-    private static final int TEAM_COLUMN_INDEX = 2;
-    private static final int PANEL_COLUMN_INDEX = 3;
-    private static final int ROUND_COLUMN_INDEX = 4;
-    private static final int SKILL_COLUMN_INDEX = 5;
-    private static final int TIME_COLUMN_INDEX = 6;
-    private static final int CUR_LOC_COLUMN_INDEX= 7;
-    private static final int PREF_LOC_COLUMN_INDEX = 8;
-    private static final int CANDIDATE_NAME_COLUMN_INDEX = 9;
-
     public List<Interview> readExcelFile(String fileName) {
         List<Interview> interviewList = new ArrayList<>();
 
@@ -45,15 +34,15 @@ public class ExcelFileReader {
                 Interview interview = new Interview();
 
                 interview.setDate(getCellValueAsDate(row.getCell(0)));
-                interview.setMonth(getCellValueAsString(row.getCell(1)));
-                interview.setTeamName(getCellValueAsString(row.getCell(2)));
-                interview.setPanelName(getCellValueAsString(row.getCell(3)));
-                interview.setRound(getCellValueAsString(row.getCell(4)));
-                interview.setSkill(getCellValueAsString(row.getCell(5)));
+                interview.setMonth(getCellValueAsMonth(row.getCell(1)));
+                interview.setTeamName(getCellValue(row.getCell(2)));
+                interview.setPanelName(getCellValue(row.getCell(3)));
+                interview.setRound(getCellValue(row.getCell(4)));
+                interview.setSkill(getCellValue(row.getCell(5)));
                 interview.setTime(getCellvalueAsTime(row.getCell(6)));
-                interview.setCurrLocation(getCellValueAsString(row.getCell(7)));
-                interview.setPrefLocation(getCellValueAsString(row.getCell(8)));
-                interview.setCandidateName(getCellValueAsString(row.getCell(9)));
+                interview.setCurrLocation(getCellValue(row.getCell(7)));
+                interview.setPrefLocation(getCellValue(row.getCell(8)));
+                interview.setCandidateName(getCellValue(row.getCell(9)));
 
                 interviewList.add(interview);
             }
@@ -65,37 +54,56 @@ public class ExcelFileReader {
         return interviewList;
     }
 
-    private static Date getCellValueAsDate(Cell cell) {
+    private static String getCellValueAsDate(Cell cell) {
         try {
 //            SimpleDateFormat sdf = new SimpleDateFormat("[d]-MMM-yy");
 //            return cell != null ? sdf.parse(cell.getStringCellValue()) : null;
-            return cell != null ? new SimpleDateFormat("[d]-MMM-yy").parse(cell.getStringCellValue()) : null;
-        } catch (ParseException | IllegalStateException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private static Date getCellvalueAsTime(Cell cell) {
-        try {
-//            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-//            return cell != null ? sdf.parse(cell.getStringCellValue()) : null;
-            return cell != null ? new SimpleDateFormat("HH:mm").parse(cell.getStringCellValue()) : null;
-        } catch (ParseException  | IllegalStateException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private static String getCellValueAsString(Cell cell) {
-        try {
-//            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-//            return cell != null ? sdf.parse(cell.getStringCellValue()) : null;
-            return cell != null ? cell.getStringCellValue() : null;
+                SimpleDateFormat sdf = new SimpleDateFormat("[d]-MMM-yy");
+                return sdf.format(cell.getDateCellValue());
         } catch (IllegalStateException e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private static String getCellValueAsMonth(Cell cell) {
+        try {
+//            SimpleDateFormat sdf = new SimpleDateFormat("[d]-MMM-yy");
+//            return cell != null ? sdf.parse(cell.getStringCellValue()) : null;
+            return cell.getStringCellValue() != null ? cell.getStringCellValue() : null;
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    private static String getCellvalueAsTime(Cell cell) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            return cell.getLocalDateTimeCellValue().format(formatter);
+        } catch (IllegalStateException e) {
+            return null;
+        }
+    }
+
+    private static String getCellValue(Cell cell) {
+        try {
+            if (cell == null) {
+                return null;
+            }
+            switch (cell.getCellType()) {
+                case STRING:
+                    return cell.getStringCellValue();
+                case NUMERIC:
+                    return String.valueOf(cell.getNumericCellValue());
+                default:
+                    return null;
+            }
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
 
