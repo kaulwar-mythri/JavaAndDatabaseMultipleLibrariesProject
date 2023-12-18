@@ -30,6 +30,7 @@ public class JavaAndDatabaseApplication {
 		ExcelFileReader fileReader = new ExcelFileReader();
 		String filePath = "C:\\Users\\kaulwar.mythri\\IdeaProjects\\JavaAndDatabase\\src\\main\\resources\\AccoliteInterviewData.xlsx";
 		List<Interview> interviewList = fileReader.readExcelFile(filePath);
+		System.out.println(interviewList.size());
 //
 //		interviewList.parallelStream().forEach(JavaAndDatabaseApplication::insertDataIntoSQLTable);
 //
@@ -93,13 +94,13 @@ public class JavaAndDatabaseApplication {
 			String sql = "INSERT INTO interviews (date, month, teamName, panelName, round, skill, time, currLocation, prefLocation, candidateName) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 			try(PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-				preparedStatement.setString(1, interview.getDate());
+				preparedStatement.setDate(1, new java.sql.Date(interview.getDate().getTime()));
 				preparedStatement.setString(2, interview.getMonth());
 				preparedStatement.setString(3, interview.getTeamName());
 				preparedStatement.setString(4, interview.getPanelName());
 				preparedStatement.setString(5, interview.getRound());
 				preparedStatement.setString(6, interview.getSkill());
-				preparedStatement.setString(7, interview.getTime());
+				preparedStatement.setDate(7, new java.sql.Date(interview.getDate().getTime()));
 				preparedStatement.setString(8, interview.getCurrLocation());
 				preparedStatement.setString(9, interview.getPrefLocation());
 				preparedStatement.setString(10, interview.getCandidateName());

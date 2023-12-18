@@ -1,26 +1,24 @@
 package models;
 
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.Date;
 
 public class Interview {
-    String date;
+    Date date;
     String month;
     String teamName;
     String panelName;
     String round;
     String skill;
-    String time;
+    Date time;
     String currLocation;
     String prefLocation;
     String candidateName;
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -32,11 +30,11 @@ public class Interview {
         this.month = month;
     }
 
-    public String getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(Date time) {
         this.time = time;
     }
 
@@ -100,7 +98,7 @@ public class Interview {
     public String toString() {
         return "Interview{" +
                 "date=" + date +
-                ", month=" + month +
+                ", month='" + month + '\'' +
                 ", teamName='" + teamName + '\'' +
                 ", panelName='" + panelName + '\'' +
                 ", round='" + round + '\'' +
