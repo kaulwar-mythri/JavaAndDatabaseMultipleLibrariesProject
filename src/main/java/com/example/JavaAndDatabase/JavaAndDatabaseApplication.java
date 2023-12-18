@@ -1,12 +1,12 @@
 package com.example.JavaAndDatabase;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.*;
+
+import com.itextpdf.layout.element.Image;
 import models.Interview;
-import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -39,56 +39,52 @@ public class JavaAndDatabaseApplication {
 
 	private static void generateCharts(List<Interview> interviewList) {
 		String pdfPath = "charts.pdf";
-		Document document = new Document(PageSize.A4);
-		try {
-			PdfWriter.getInstance(document, new FileOutputStream(pdfPath));
-			document.open();
+
+		try (OutputStream os = new FileOutputStream(pdfPath);
+			 PdfWriter writer = new PdfWriter(os);
+			 PdfDocument pdfDocument = new PdfDocument(writer);
+			 Document document = new Document(pdfDocument)) {
 
 
 			SQLQueries queries = new SQLQueries();
-			addChartToPDF(document, "Team with maximum Interviews in October and November", queries.MaxInterviewsQuery());
-			addChartToPDF(document, "Team with minimum Interviews in October and November", queries.MinInterviewsQuery());
-			addChartToPDF(document, "Top 3 panels in October and November", queries.getTop3Panels(interviewList));
-			addChartToPDF(document, "Top 3 skills in October and November", queries.getTop3kills());
-			addChartToPDF(document, "Team 3 skills in peak time in October and November", queries.getTop3killsForPeakTime());
+			JFreeChart chart1 = queries.MaxInterviewsQuery();
+			System.out.println(chart1);
+			BufferedImage image = chart1.createBufferedImage(700, 500);
+			Image itextImage = new Image(ImageDataFactory.create(image, null));
 
-//			ChartPanel chartPanel = new ChartPanel(chart);
-//			chartPanel.setPreferredSize(new java.awt.Dimension(500, 350));
-//			setContentPane(chartPanel);
-//
-//			setSize(700, 500);
-//			setLocationRelativeTo(null);
-//			setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//			setVisible(true);
+			document.add(itextImage);
+
+			JFreeChart chart2 = queries.MinInterviewsQuery();
+			BufferedImage image2 = chart2.createBufferedImage(700, 500);
+			Image itextImage2 = new Image(ImageDataFactory.create(image2, null));
+
+			document.add(itextImage2);
+
+			JFreeChart chart5 = queries.getTop3killsForPeakTime();
+			BufferedImage image5 = chart5.createBufferedImage(700, 500);
+			Image itextImage5 = new Image(ImageDataFactory.create(image5, null));
+
+			document.add(itextImage5);
+
+			JFreeChart chart4 = queries.getTop3kills();
+			BufferedImage image4 = chart4.createBufferedImage(700, 500);
+			Image itextImage4 = new Image(ImageDataFactory.create(image4, null));
+
+			document.add(itextImage4);
+
+			JFreeChart chart3 = queries.getTop3Panels(interviewList);
+			System.out.println(chart3);
+			BufferedImage image3 = chart3.createBufferedImage(700, 500);
+			Image itextImage3 = new Image(ImageDataFactory.create(image3, null));
+
+			document.add(itextImage3);
+
 			System.out.println("Path of the generated pdf: " + pdfPath);
 		} catch(Exception e) {
 			e.printStackTrace();
-		} finally {
-			if(document != null) {
-				document.close();
-			}
 		}
 	}
 
-	public static void addChartToPDF(Document document, String title, JFreeChart chart) {
-		try {
-			document.add(new Paragraph(title));
-			ChartPanel chartPanel = new ChartPanel(chart);
-			chartPanel.setPreferredSize(new java.awt.Dimension(500, 350));
-			chartPanel.setChart(chart);
-
-			BufferedImage image = chart.createBufferedImage(600, 400);
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-			ImageIO.write(image, "png", outputStream);
-			Image chartImage = Image.getInstance(outputStream.toByteArray());
-
-			document.add(chartImage);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-
-	}
 	private static void insertDataIntoSQLTable(Interview interview) {
 		try(Connection connection = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD)) {
 			String sql = "INSERT INTO interviews (date, month, teamName, panelName, round, skill, time, currLocation, prefLocation, candidateName) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";

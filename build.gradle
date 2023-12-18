@@ -23,6 +23,8 @@ dependencies {
 	implementation 'com.mysql:mysql-connector-j:8.2.0'
 	implementation 'org.jfree:jfreechart:1.5.3'
 	implementation 'com.itextpdf:itextpdf:5.5.13.2'
+	implementation 'com.itextpdf:kernel:7.2.1'
+	implementation 'com.itextpdf:layout:7.2.1'
 }
 
 tasks.named('test') {
